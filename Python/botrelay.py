@@ -11,13 +11,8 @@ class BotProtocol(basic.LineReceiver):
 
     def lineReceived(self, line):
         data=json.loads(line)
-        user=self.factory.check_token(data['token'])
-        if (user==False):
+        if (self.factory.check_token(data['token'])==False):
             self.transport.loseConnection()
         commands=data.items()
         commands.reverse()
-        commands=commands[1:]
-        dispatch=[]
-        for i in commands:
-            dispatch+=[user]+[x for x in i]
-        botclient.commandq.put(dispatch)
+        self.factory.write_socket(json.dumps(commands[1:]))
