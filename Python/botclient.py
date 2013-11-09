@@ -6,13 +6,10 @@ from twisted.internet import protocol, reactor
 from twisted.protocols import basic
 import botprotocol, relayprotocol
 
-filename='userdb'   #json formatted as {token: user, ...}
-patha='placeholder1'
-pathb='placeholder2'
-commandq=Queue()    #contains items in format (user, field, data)
+filename='userdb.json'   #json formatted as {token: user, ...}
 
 class BotRelayFactory(protocol.ServerFactory):
-    protocol=relayprotocol.RelayProtocol
+    protocol=relayprotocol.BotRelayProtocol
 
     def __init__(self):
         self.connected=False
@@ -51,9 +48,8 @@ class BotFactory(protocol.ServerFactory):
             return self.db[token]
         return False
 
-reactora.listenTCP(6667, BotFactory())
-reactorb.listenTCP(6668, BotRelayFactory())
-reactorc.listenTCP(6669, BotRelayFactory())
-reactora.run()
-reactorb.run()
-reactorc.run()
+reactor.listenTCP(6667, BotFactory())
+reactor.listenTCP(6668, BotRelayFactory())
+#reactorc.listenTCP(6669, BotRelayFactory())
+reactor.run()
+#reactorc.run()
