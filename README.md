@@ -43,6 +43,7 @@ return it to its client. Now the client should display it.
 
 
 Heres a layout of sorts:
+(This thing is screwed up on github. Sorry)
 benbot    ---> |both send their commands to| 
 alyssabot ---> |robot comms servers        | ----> parses and puts data in a multiprocess queue -->-|
                                                                                                     |
