@@ -4,9 +4,36 @@ import json
 from multiprocessing import Process, Queue, Value
 from twisted.internet import protocol, reactor
 from twisted.protocols import basic
-import botprotocol, relayprotocol
+
+#for websockets
+from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
+
+import botprotocol, relayprotocol, websocketrelayprotocol
 
 filename='userdb.json'   #json formatted as {token: user, ...}
+
+class WebSocketBotRelayFactory(WebSocketServerFactory):
+    protocol=websocketrelayprotocol.BotRelayProtocol
+
+    def __init__(self, url, debug=False, debugCodepaths=False):
+        WebSocketServerFactory.__init__(self, url)
+        self.connected=False
+        self.targetuser=None
+
+    def isconnected(self):
+        return self.connected
+
+    def connect(self):
+        self.connected=True
+
+    def disconnect(self):
+        self.connected=False
+
+    def settargetuser(self, user):
+        self.targetuser=user
+
+    def gettargetuser(self):
+        return self.targetuser
 
 class BotRelayFactory(protocol.ServerFactory):
     protocol=relayprotocol.BotRelayProtocol
@@ -49,7 +76,8 @@ class BotFactory(protocol.ServerFactory):
         return False
 
 reactor.listenTCP(6667, BotFactory())
-reactor.listenTCP(6668, BotRelayFactory())
+listenWS(WebSocketBotRelayFactory("ws://localhost:9000", True, True))
+#reactor.listenTCP(6668, BotRelayFactory())
 #reactorc.listenTCP(6669, BotRelayFactory())
 reactor.run()
 #reactorc.run()
