@@ -56,3 +56,10 @@ alyssabot ---> |robot comms servers        | ----> parses and puts data in a mul
                                               'none'
 A different relayclient (or the same one) can specify that it wants to
 receive alyssabot's communication.
+
+
+#UPDATE LOG
+11/29/13 Added websocket support. Works exactly the same way as the old
+         botrelay protocol except now you can do it in javascript!
+
+
