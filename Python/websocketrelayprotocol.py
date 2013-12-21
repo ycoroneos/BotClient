@@ -8,25 +8,21 @@ user_regex=re.compile('set user ')
 
 class BotRelayProtocol(WebSocketServerProtocol):
     def onOpen(self):
-        if (self.factory.isconnected==False):
-            self.transport.write("Someone's already connected idiot...\r\n")
-            self.transport.loseConnection()
-        else:
-            self.factory.connect()
+    	self.targetuser=None
 
     def connectionLost(self, reason):
-        self.factory.disconnect()
+	self.targetuser=None
 
     def onMessage(self, line, binary):
-        user=self.factory.gettargetuser()
-        if (line=="n" and user!=None):
+        #user=self.factory.gettargetuser()
+        if (line=="n" and self.targetuser!=None):
             #cycle through the queue until a command which matches our target user is found
             #this has the potential to infinitely loop so fix that later
-            print 'ok, fetching the next command from ' + user +'\n'
+            print 'ok, fetching the next command from ' + self.targetuser +'\n'
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
                 command=handler.commandq.get()
-                if (command[0]==user):
+                if (command[0]==self.targetuser):
                     self.transport.write(json.dumps(command))
                     return
                 else:
@@ -37,4 +33,4 @@ class BotRelayProtocol(WebSocketServerProtocol):
             if (result!=None):
                 user=line[len(result.group(0)):]
                 print 'setting target user to: ' + user + '\n'
-                self.factory.settargetuser(user)
+		self.targetuser=user

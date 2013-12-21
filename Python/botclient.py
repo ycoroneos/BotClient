@@ -17,23 +17,6 @@ class WebSocketBotRelayFactory(WebSocketServerFactory):
 
     def __init__(self, url, debug=False, debugCodepaths=False):
         WebSocketServerFactory.__init__(self, url)
-        self.connected=False
-        self.targetuser=None
-
-    def isconnected(self):
-        return self.connected
-
-    def connect(self):
-        self.connected=True
-
-    def disconnect(self):
-        self.connected=False
-
-    def settargetuser(self, user):
-        self.targetuser=user
-
-    def gettargetuser(self):
-        return self.targetuser
 
 class BotRelayFactory(protocol.ServerFactory):
     protocol=relayprotocol.BotRelayProtocol

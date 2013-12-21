@@ -2,6 +2,9 @@ from twisted.internet import protocol, reactor
 from twisted.protocols import basic
 import json, handler
 
+#this needs to be improved so that the token must not be checked every command. Probably the bets improvement is to save the session
+#in the factory by checking the token once
+
 class BotProtocol(basic.LineReceiver):
     def connectionMade(self):
         self.factory.addConnection()
