@@ -7,11 +7,11 @@ import json, handler
 
 class BotProtocol(basic.LineReceiver):
     def connectionMade(self):
-        self.factory.addConnection()
+        self.factory.addConnection(self)
         self.user=False
 
     def connectionLost(self, reason):
-        self.factory.removeConnection()
+        self.factory.removeConnection(self)
 
     def dataReceived(self, line):
         print line
@@ -26,12 +26,15 @@ class BotProtocol(basic.LineReceiver):
         if (self.user==False):
             print 'invalid user\n'
             return
-        print 'valid user\n'
-        commands=data.items()
-        #commands.reverse()
-        commands=commands[1:]
-        dispatch=[]
-        for i in commands:
-            dispatch+=[self.user]+[x for x in i]
-        print str(dispatch)+'\n'
-        handler.commandq.put(dispatch)
+        elif (self.user=='admin'):
+            print 'admin is here Oo\n'
+            self.factory.broadcast('imanadmin\n')
+        else:
+            print 'valid user\n'
+            commands=data.items()
+            commands=commands[1:]
+            dispatch=[]
+            for i in commands:
+                dispatch+=[self.user]+[x for x in i]
+            print str(dispatch)+'\n'
+            handler.commandq.put(dispatch)
