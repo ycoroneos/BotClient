@@ -2,12 +2,13 @@ from twisted.internet import protocol, reactor
 from twisted.protocols import basic
 import json, handler
 
-#this needs to be improved so that the token must not be checked every command. Probably the bets improvement is to save the session
+#this needs to be improved so that the token must not be checked every command. Probably the best improvement is to save the session
 #in the factory by checking the token once
 
 class BotProtocol(basic.LineReceiver):
     def connectionMade(self):
         self.factory.addConnection()
+        self.user=False
 
     def connectionLost(self, reason):
         self.factory.removeConnection()
@@ -21,15 +22,16 @@ class BotProtocol(basic.LineReceiver):
             print 'failed decoding line\n'
             return
         print str(data) + '\n'
-        user=self.factory.check_token(data['token'])
-        if (user==False):
-            self.transport.loseConnection()
+        self.user=self.factory.check_token(data['token'])
+        if (self.user==False):
+            print 'invalid user\n'
+            return
         print 'valid user\n'
         commands=data.items()
-        commands.reverse()
+        #commands.reverse()
         commands=commands[1:]
         dispatch=[]
         for i in commands:
-            dispatch+=[user]+[x for x in i]
+            dispatch+=[self.user]+[x for x in i]
         print str(dispatch)+'\n'
         handler.commandq.put(dispatch)

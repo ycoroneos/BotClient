@@ -17,8 +17,6 @@ class BotRelayProtocol(WebSocketServerProtocol):
     def onMessage(self, line, binary):
         #user=self.factory.gettargetuser()
         if (line=="n" and self.targetuser!=None):
-            #cycle through the queue until a command which matches our target user is found
-            #this has the potential to infinitely loop so fix that later
             print 'ok, fetching the next command from ' + self.targetuser +'\n'
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
