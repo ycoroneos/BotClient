@@ -59,6 +59,8 @@ receive alyssabot's communication.
 
 
 #UPDATE LOG
+12/22/13 Added broadcast support as well as sysadmin support
+
 11/29/13 Added websocket support. Works exactly the same way as the old
          botrelay protocol except now you can do it in javascript!
 
