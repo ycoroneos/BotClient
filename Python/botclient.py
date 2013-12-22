@@ -8,7 +8,7 @@ from twisted.protocols import basic
 #for websockets
 from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 
-import botprotocol, relayprotocol, websocketrelayprotocol
+import botprotocol, websocketrelayprotocol
 
 filename='userdb.json'   #json formatted as {token: user, ...}
 
@@ -18,7 +18,7 @@ class WebSocketBotRelayFactory(WebSocketServerFactory):
     def __init__(self, url, debug=False, debugCodepaths=False):
         WebSocketServerFactory.__init__(self, url)
 
-class BotRelayFactory(protocol.ServerFactory):
+'''class BotRelayFactory(protocol.ServerFactory):
     protocol=relayprotocol.BotRelayProtocol
 
     def __init__(self):
@@ -39,7 +39,7 @@ class BotRelayFactory(protocol.ServerFactory):
 
     def gettargetuser(self):
         return self.targetuser
-
+'''
 class BotFactory(protocol.ServerFactory):
     protocol = botprotocol.BotProtocol
 
