@@ -14,14 +14,14 @@ class BotProtocol(basic.LineReceiver):
         self.factory.removeConnection(self)
 
     def dataReceived(self, line):
-        print line
+        print 'input: ' + str(line) + '\n'
         #line=line[:-2]
         try:
             data=json.loads(line[:-1])
         except:
             print 'failed decoding line\n'
             return
-        print str(data) + '\n'
+        print 'decoded json: ' + str(data) + '\n'
         self.user=self.factory.check_token(data['token'])
         if (self.user==False):
             print 'invalid user\n'
@@ -31,10 +31,11 @@ class BotProtocol(basic.LineReceiver):
             self.factory.broadcast('imanadmin\n')
         else:
             print 'valid user\n'
+            del data['token']
             commands=data.items()
-            commands=commands[1:]
+            #commands=commands[1:]
             dispatch=[]
             for i in commands:
                 dispatch+=[self.user]+[x for x in i]
-            print str(dispatch)+'\n'
+            print 'whats going in the queue: ' + str(dispatch)+'\n'
             handler.commandq.put(dispatch)
