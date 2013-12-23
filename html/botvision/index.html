@@ -19,8 +19,8 @@
 		conn.onopen = function () {
 			var username = prompt("Team Username","");
       greeting(username);
-      request();
-			//setInterval(function(){request();},50);
+      //request();
+			setInterval(function(){request();},50);
 		};
 		
 		// Log errors
@@ -34,9 +34,8 @@
         {
 			  var data = JSON.parse(e.data);
 			
-			  if ( data[0]=="IMAGE_DATA" )
-				  setImage( data[1] );
-			  else
+			  /*if ( data[0]=="IMAGE_DATA" )
+				  setImage( data[1] );*/
           setData( data );
         }
       };
@@ -56,15 +55,19 @@ function setData( data ) {
     for (var i=0;i<data.length;i+=3)
     {
       var field=data[i+1];
+      if (field=="IMAGE_DATA")
+      {
+        //console.log(data[i+2]);
+        setImage(data[i+2]);
+        continue;
+      }
       var str="<h1>"+data[i+2][0]+"</h1>"+data[i+2][1]+"<br>";
-      console.log(field);
-      console.log(str);
       $("#"+field).html(str);
     }
 	}
 	
 	function setImage( uri ) {
-		$("#imgview").attr("src",uri);
+		$("#imgview").attr("src","data:image/png;base64,"+uri);
 	}
 </script>
 <style>

@@ -6,18 +6,30 @@ import json, handler
 #in the factory by checking the token once
 
 class BotProtocol(basic.LineReceiver):
+    MAX_LENGTH=90000
     def connectionMade(self):
         self.factory.addConnection(self)
         self.user=False
+        self.tmpline=''
 
     def connectionLost(self, reason):
         self.factory.removeConnection(self)
 
     def dataReceived(self, line):
-        print 'input: ' + str(line) + '\n'
-        #line=line[:-2]
+        line=line[:-1]
+        self.tmpline+=line
+        print line[-4:]
+        if (line[-4:]=='done'):
+            print 'ok parsing line\n'
+            self.tmpline=self.tmpline[:-4]
+            self.parseline()
+            self.tmpline=''
+        else:
+            return
+    def parseline(self):
+        print 'input: ' + str(self.tmpline) + '\n'
         try:
-            data=json.loads(line[:-1])
+            data=json.loads(self.tmpline)
         except:
             print 'failed decoding line\n'
             return
