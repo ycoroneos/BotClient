@@ -50,4 +50,4 @@ class BotProtocol(basic.LineReceiver):
             for i in commands:
                 dispatch+=[self.user]+[x for x in i]
             print 'whats going in the queue: ' + str(dispatch)+'\n'
-            handler.commandq.put(dispatch)
+            handler.addtoqueue(dispatch)
