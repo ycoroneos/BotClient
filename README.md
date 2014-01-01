@@ -59,9 +59,14 @@ receive alyssabot's communication.
 
 
 #UPDATE LOG
+
 12/22/13 Added broadcast support as well as sysadmin support
 
 11/29/13 Added websocket support. Works exactly the same way as the old
          botrelay protocol except now you can do it in javascript!
 
-
+1/1/14   Basically done. Botview is working with streaming images. There
+         is an admin protocol whose instructions are sent to every robot
+         and displayed on the screen in a special admin field.
+         Server->client communication also works. The botclient java
+         helper api is still pending.
