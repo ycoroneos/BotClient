@@ -6,7 +6,7 @@ import json, handler, re
 #in the factory by checking the token once
 
 done_regex=re.compile('done')
-ping_regex=re.compile('ping')
+ping_regex=re.compile('ping\n')
 
 class BotProtocol(basic.LineReceiver):
     MAX_LENGTH=90000
@@ -14,15 +14,16 @@ class BotProtocol(basic.LineReceiver):
         self.factory.addConnection(self)
         self.user=False
         self.tmpline=''
-        self.transport.write("weee you connected\r\n")
+        self.transport.write("connected\r\n")
 
     def connectionLost(self, reason):
         self.factory.removeConnection(self)
 
     def dataReceived(self, line):
-        result=ping_regex.match(line)
+        print line+'\n'
+	result=ping_regex.match(line)
         if (result!=None):
-            self.transport.write("connected")
+            self.transport.write("pong\r\n")
             return
         line=line[:-1]
         self.tmpline+=line
