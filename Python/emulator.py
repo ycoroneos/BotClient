@@ -22,7 +22,7 @@ while (cmd!='quit'):
         commands.seek(0)
         cmd=commands.readline()
     if (i==5):
-        #s.sendall(image_cmd+'\n')
+        s.sendall(image_cmd+'\n')
         i=0
         time.sleep(0.2)
         continue
