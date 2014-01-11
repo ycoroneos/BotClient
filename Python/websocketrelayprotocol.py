@@ -17,7 +17,7 @@ class BotRelayProtocol(WebSocketServerProtocol):
     def onMessage(self, line, binary):
         #user=self.factory.gettargetuser()
         if (line=="n" and self.targetuser!=None):
-            print 'ok, fetching the next command from ' + self.targetuser +'\n'
+            #print 'ok, fetching the next command from ' + self.targetuser +'\n'
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
                 command=handler.commandq.get()
@@ -26,7 +26,7 @@ class BotRelayProtocol(WebSocketServerProtocol):
                     return
                 else:
                     handler.commandq.put(command)
-            print 'its nothing\n'
+            #print 'its nothing\n'
             self.sendMessage('none')
         else:
             result=user_regex.match(line)

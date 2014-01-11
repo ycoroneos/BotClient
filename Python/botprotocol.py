@@ -51,12 +51,14 @@ class BotProtocol(basic.LineReceiver):
         elif (self.user=='admin'):
             print 'admin is here Oo\n'
             del data['token']
-            commands=data.items()
-            dispatch=[]
-            for i in commands:
-                dispatch+=[self.user]+[x for x in i]
-            self.factory.broadcast(dispatch)
-            handler.addtoqueue(dispatch)
+            if ('MSG' in data):
+                commands=data.items()
+                dispatch=[]
+                for i in commands:
+                    dispatch+=[self.user]+[x for x in i]
+                handler.addtoqueue(dispatch)
+            else:
+                self.factory.broadcast(json.dumps(data))
         else:
             print 'valid user\n'
             del data['token']
