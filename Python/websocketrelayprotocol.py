@@ -22,6 +22,7 @@ class BotRelayProtocol(WebSocketServerProtocol):
             for i in range(0,qsize):
                 command=handler.commandq.get()
                 if (command[0]==self.targetuser):
+                    print "*****" + json.dumps(command) + "*****\n"
                     self.sendMessage(json.dumps(command))
                     return
                 else:
