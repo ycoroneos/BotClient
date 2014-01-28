@@ -20,8 +20,8 @@ class BotProtocol(basic.LineReceiver):
         self.factory.removeConnection(self)
 
     def dataReceived(self, line):
-        #print line+'\n'
-        result=ping_regex.match(line)
+        print line+'\n'
+	result=ping_regex.match(line)
         if (result!=None):
             self.transport.write("pong\r\n")
             return
@@ -31,8 +31,7 @@ class BotProtocol(basic.LineReceiver):
         result=done_regex.match(line[-5:])
         if (result!=None):
             print 'ok parsing line\n'
-            self.tmpline=self.tmpline[:-(len('done'))]
-            self.tmpline=self.tmpline[:-1]
+            self.tmpline=self.tmpline[:-(len(result.group(0))+1)]
             self.parseline()
             self.tmpline=''
         else:
