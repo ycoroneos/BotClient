@@ -7,6 +7,9 @@ import json, handler, re
 
 done_regex=re.compile('done')
 ping_regex=re.compile('ping\n')
+game_regex=re.compile('game\n')
+game_running=False
+
 
 class BotProtocol(basic.LineReceiver):
     MAX_LENGTH=90000
@@ -21,9 +24,14 @@ class BotProtocol(basic.LineReceiver):
 
     def dataReceived(self, line):
         #print line+'\n'
+        result=None
         result=ping_regex.match(line)
         if (result!=None):
             self.transport.write("pong\r\n")
+            return
+        result=game_regex.match(line)
+        if (result!=None):
+            self.transport.write(str(game_running)+'\r\n')
             return
         #line=line[:-1]
         self.tmpline+=line
@@ -60,6 +68,13 @@ class BotProtocol(basic.LineReceiver):
                 handler.addtoqueue(dispatch)
             else:
                 self.factory.broadcast(json.dumps(data))
+                try:
+                    if (data['GAME']=='start'):
+                        game_running=True
+                    elif (data['GAME']=='stop'):
+                        game_running=False
+                except:
+                    pass
         else:
             print 'valid user\n'
             del data['token']
