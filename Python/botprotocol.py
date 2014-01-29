@@ -67,7 +67,7 @@ class BotProtocol(basic.LineReceiver):
                     dispatch+=[self.user]+[x for x in i]
                 handler.addtoqueue(dispatch)
             else:
-                self.factory.broadcast(json.dumps(data))
+                self.factory.broadcast(json.dumps(data)+'\n')
                 try:
                     if (data['GAME']=="start"):
                         print "STARTING GAME\n"
