@@ -8,7 +8,6 @@ import json, handler, re
 done_regex=re.compile('done')
 ping_regex=re.compile('ping\n')
 game_regex=re.compile('game\n')
-game_running=False
 
 
 class BotProtocol(basic.LineReceiver):
@@ -31,7 +30,8 @@ class BotProtocol(basic.LineReceiver):
             return
         result=game_regex.match(line)
         if (result!=None):
-            self.transport.write(str(game_running)+'\r\n')
+            self.transport.write(self.factory.game_running+'\r\n')
+            print "received game ping request: " + self.factory.game_running + '\n'
             return
         #line=line[:-1]
         self.tmpline+=line
@@ -69,10 +69,12 @@ class BotProtocol(basic.LineReceiver):
             else:
                 self.factory.broadcast(json.dumps(data))
                 try:
-                    if (data['GAME']=='start'):
-                        game_running=True
-                    elif (data['GAME']=='stop'):
-                        game_running=False
+                    if (data['GAME']=="start"):
+                        print "STARTING GAME\n"
+                        self.factory.game_running='{"GAME":"start"}'
+                    elif (data['GAME']=="stop"):
+                        print "STOPPING GAME\n"
+                        self.factory.game_running='{"GAME":"stop"}'
                 except:
                     pass
         else:

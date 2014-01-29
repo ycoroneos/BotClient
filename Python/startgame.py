@@ -5,8 +5,8 @@ HOST=sys.argv[1]
 PORT=sys.argv[2]
 mapfile=sys.argv[3]
 map=open(mapfile, 'r').read()[:-1]
-map_cmd='{"token":"666","MAP":"'+map+'"}done\n'
-game_cmd='{"token":"666","GAME":"start"}done\n'
+map_cmd='{"token":"EViL","MAP":"'+map+'"}done\n'
+game_cmd='{"token":"EViL","GAME":"start"}done\n'
 
 s=socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 s.connect((HOST, int(PORT)))
