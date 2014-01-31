@@ -38,13 +38,11 @@ class BotProtocol(basic.LineReceiver):
         #print line[-5:]
         result=done_regex.match(line[-5:])
         if (result!=None):
-            stime=time.time()
  #           print 'ok parsing line\n'
             self.tmpline=self.tmpline[:-(len('done'))]
             self.tmpline=self.tmpline[:-1]
             self.parseline()
             self.tmpline=''
-            print str(1000*(time.time()-stime))
         else:
             return
     def parseline(self):
@@ -69,7 +67,9 @@ class BotProtocol(basic.LineReceiver):
                 dispatch=[]
                 for i in commands:
                     dispatch+=[self.user]+[x for x in i]
-                handler.addtoqueue(dispatch)
+                #handler.addtoqueue(dispatch)
+                handler.admincommand=dispatch
+                #print 'put ' + str(dispatch) + ' into the admin field!\n'
             else:
                 if ('GAME' in data):
                     if (data['GAME']=="start"):

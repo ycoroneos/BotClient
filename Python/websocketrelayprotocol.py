@@ -20,6 +20,8 @@ class BotRelayProtocol(WebSocketServerProtocol):
         #user=self.factory.gettargetuser()
         if (line=="n" and self.targetuser!=None):
             #print 'ok, fetching the next command from ' + self.targetuser +'\n'
+            if (handler.admincommand!=None):
+                self.sendMessage(json.dumps(handler.admincommand))
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
                 command=handler.commandq.get()
