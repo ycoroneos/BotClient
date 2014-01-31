@@ -49,6 +49,10 @@ class BotFactory(protocol.ServerFactory):
         self.db=json.loads(open(filename, 'r').read())
         self.clients=[]
         self.game_running='{"GAME":"stop"}'
+        self.left_team=None
+        self.right_team=None
+        self.left_map=None
+        self.right_map=None
 
     def addConnection(self, client):
         self.connections+=1

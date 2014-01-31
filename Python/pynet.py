@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2.7
 import socket, sys, time, base64, json
 
 HOST=sys.argv[1]

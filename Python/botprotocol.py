@@ -1,6 +1,6 @@
 from twisted.internet import protocol, reactor
 from twisted.protocols import basic
-import json, handler, re
+import json, handler, re, copy
 
 #this needs to be improved so that the token must not be checked every command. Probably the best improvement is to save the session
 #in the factory by checking the token once
@@ -67,19 +67,40 @@ class BotProtocol(basic.LineReceiver):
                     dispatch+=[self.user]+[x for x in i]
                 handler.addtoqueue(dispatch)
             else:
-                self.factory.broadcast(json.dumps(data)+'\n')
-                try:
+                if ('GAME' in data):
                     if (data['GAME']=="start"):
                         print "STARTING GAME\n"
                         self.factory.game_running='{"GAME":"start"}'
                     elif (data['GAME']=="stop"):
                         print "STOPPING GAME\n"
                         self.factory.game_running='{"GAME":"stop"}'
-                except:
-                    pass
+                if ('left_team' in data):
+                    self.factory.left_team=copy.copy(str(data['left_team']))
+                    del data['left_team']
+                if ('right_team' in data):
+                    self.factory.right_team=copy.copy(str(data['right_team']))
+                    del data['right_team']
+                if ('left_map' in data):
+                    print 'setting left map\n'
+                    self.factory.left_map=copy.copy(str(data['left_map']))
+                    del data['left_map']
+                if ('right_map' in data):
+                    print 'setting right map\n'
+                    self.factory.right_map=copy.copy(str(data['right_map']))
+                    del data['right_map']
+                if (len(data)>0):
+                    self.factory.broadcast(json.dumps(data)+'\n')
         else:
             print 'valid user\n'
             del data['token']
+            if ('MAP' in data):
+                if (self.user==self.factory.right_team):
+                    print 'sending ' + str(self.user) + ' the map: ' + self.factory.right_map + '\n'
+                    self.transport.write('{"MAP":"'+self.factory.right_map+'"}\n')
+                else:
+                    print 'sending ' + str(self.user) + ' the map: ' + self.factory.left_map + '\n'
+                    self.transport.write('{"MAP":"'+self.factory.left_map+'"}\n')
+                del data['MAP']
             commands=data.items()
             dispatch=[]
             for i in commands:

@@ -17,12 +17,13 @@ class BotRelayProtocol(WebSocketServerProtocol):
     def onMessage(self, line, binary):
         #user=self.factory.gettargetuser()
         if (line=="n" and self.targetuser!=None):
-            #print 'ok, fetching the next command from ' + self.targetuser +'\n'
+            print 'ok, fetching the next command from ' + self.targetuser +'\n'
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
                 command=handler.commandq.get()
+                if (len(command)<1):
+                    return
                 if (command[0]==self.targetuser):
-                    print "*****" + json.dumps(command) + "*****\n"
                     self.sendMessage(json.dumps(command))
                     return
                 else:
