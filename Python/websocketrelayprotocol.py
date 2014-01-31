@@ -3,8 +3,10 @@ from multiprocessing import Process, Queue
 from twisted.protocols import basic
 from autobahn.websocket import WebSocketServerFactory, WebSocketServerProtocol, listenWS
 import json, re, handler
+from multiprocessing.sharedctypes import Value, Array
 
 user_regex=re.compile('set user ')
+
 
 class BotRelayProtocol(WebSocketServerProtocol):
     def onOpen(self):
@@ -17,7 +19,7 @@ class BotRelayProtocol(WebSocketServerProtocol):
     def onMessage(self, line, binary):
         #user=self.factory.gettargetuser()
         if (line=="n" and self.targetuser!=None):
-            print 'ok, fetching the next command from ' + self.targetuser +'\n'
+            #print 'ok, fetching the next command from ' + self.targetuser +'\n'
             qsize=handler.commandq.qsize()
             for i in range(0,qsize):
                 command=handler.commandq.get()

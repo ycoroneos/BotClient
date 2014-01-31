@@ -1,6 +1,6 @@
 from twisted.internet import protocol, reactor
 from twisted.protocols import basic
-import json, handler, re, copy
+import json, handler, re, copy, time
 
 #this needs to be improved so that the token must not be checked every command. Probably the best improvement is to save the session
 #in the factory by checking the token once
@@ -31,28 +31,30 @@ class BotProtocol(basic.LineReceiver):
         result=game_regex.match(line)
         if (result!=None):
             self.transport.write(self.factory.game_running+'\r\n')
-            print "received game ping request: " + self.factory.game_running + '\n'
+#            print "received game ping request: " + self.factory.game_running + '\n'
             return
         #line=line[:-1]
         self.tmpline+=line
-        print line[-5:]
+        #print line[-5:]
         result=done_regex.match(line[-5:])
         if (result!=None):
-            print 'ok parsing line\n'
+            stime=time.time()
+ #           print 'ok parsing line\n'
             self.tmpline=self.tmpline[:-(len('done'))]
             self.tmpline=self.tmpline[:-1]
             self.parseline()
             self.tmpline=''
+            print str(1000*(time.time()-stime))
         else:
             return
     def parseline(self):
-        print 'input: ' + str(self.tmpline) + '\n'
+  #      print 'input: ' + str(self.tmpline) + '\n'
         try:
             data=json.loads(self.tmpline)
         except:
             print 'failed decoding line\n'
             return
-        print 'decoded json: ' + str(data) + '\n'
+   #     print 'decoded json: ' + str(data) + '\n'
         self.user=self.factory.check_token(data['token'])
         if (self.user==False):
             print 'invalid user\n'
@@ -62,6 +64,8 @@ class BotProtocol(basic.LineReceiver):
             del data['token']
             if ('MSG' in data):
                 commands=data.items()
+                if (len(commands)<1):
+                    return
                 dispatch=[]
                 for i in commands:
                     dispatch+=[self.user]+[x for x in i]
@@ -91,19 +95,21 @@ class BotProtocol(basic.LineReceiver):
                 if (len(data)>0):
                     self.factory.broadcast(json.dumps(data)+'\n')
         else:
-            print 'valid user\n'
+            #print 'valid user\n'
             del data['token']
             if ('MAP' in data):
                 if (self.user==self.factory.right_team):
-                    print 'sending ' + str(self.user) + ' the map: ' + self.factory.right_map + '\n'
+    #                print 'sending ' + str(self.user) + ' the map: ' + self.factory.right_map + '\n'
                     self.transport.write('{"MAP":"'+self.factory.right_map+'"}\n')
                 else:
-                    print 'sending ' + str(self.user) + ' the map: ' + self.factory.left_map + '\n'
+     #               print 'sending ' + str(self.user) + ' the map: ' + self.factory.left_map + '\n'
                     self.transport.write('{"MAP":"'+self.factory.left_map+'"}\n')
                 del data['MAP']
             commands=data.items()
+            if (len(commands)<1):
+                return
             dispatch=[]
             for i in commands:
                 dispatch+=[self.user]+[x for x in i]
-            print 'whats going in the queue: ' + str(dispatch)+'\n'
+            #print 'whats going in the queue: ' + str(dispatch)+'\n'
             handler.addtoqueue(dispatch)

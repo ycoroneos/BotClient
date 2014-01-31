@@ -1,6 +1,6 @@
 from multiprocessing import Process, Queue, Value
 
-maxqsize=100
+maxqsize=5
 commandq=Queue()    #contains items in format (user, field, data)
 
 def addtoqueue(dispatch):
